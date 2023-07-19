@@ -2,25 +2,29 @@ import React from 'react';
 import cngAvIcon from '../images/change-avatar-icon.svg';
 import addBtn from '../images/add-btn-plus.svg';
 import api from '../utils/api.js';
+import Card from "./Card.js";
 
-function Main(props, isOpen) {
+function Main(props) {
   const [userName, setUserName] = React.useState('');
   const [userDescription, setUserDescription] = React.useState('');
   const [userAvatar, setUserAvatar] = React.useState('');
+  // const [myId, setMyId] = React.useState('');
 
   const [cards, setCards] = React.useState([]);
 
-  React.useEffect( () => {
-    api.getUserInfo()
-      .then((userData) => {
+  React.useEffect(() => {
+    Promise.all([api.getUserInfo(), api.getInitialCards()])
+      .then(([userData, cardsData]) => {
         setUserName(userData.name);
         setUserDescription(userData.about);
         setUserAvatar(userData.avatar);
+        cardsData.forEach(elem => elem.myid = userData._id);
+        setCards(cardsData);
       })
       .catch(err => {
         return Promise.reject(`Ошибка: ${err}`);
       })
-  });
+  }, []);
 
   return (
     <main className="content">
@@ -43,7 +47,15 @@ function Main(props, isOpen) {
           <img src={addBtn} alt="Плюс в рамке" />
         </button>
       </section>
-      <section className="photo-grid"></section>
+      <section className="photo-grid">
+        { cards.map(data => {
+            return (
+              <div className="card" key={data._id}>
+                <Card card={data} onCardClick={props.onCardClick} />
+              </div>
+            )
+          }) }
+      </section>
 
       <template id="card-template">
         <div className="card">
