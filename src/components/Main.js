@@ -56,21 +56,6 @@ function Main(props) {
             )
           }) }
       </section>
-
-      <template id="card-template">
-        <div className="card">
-          <img className="card__image" />
-          <button type="button" className="card__trash-button"></button>
-          <div className="card__description">
-            <h2 className="card__name"></h2>
-            <div className="card__like-container">
-              <button type="button" className="card__like-button"></button>
-              <span className="card__like-quantity">0</span>
-            </div>
-          </div>
-        </div>
-      </template>
-
     </main>
   )
 }

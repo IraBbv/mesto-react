@@ -34,7 +34,7 @@ function App() {
   }
 
   return (
-    <div className="App page">
+    <div className="page">
       <Header />
       <Main onEditProfile={handleEditProfileClick} 
             onAddPlace={handleAddPlaceClick}
