@@ -8,6 +8,7 @@ import api from "../utils/api.js";
 import CurrentUserContext from "../contexts/CurrentUserContext.js";
 import EditProfilePopup from "./EditProfilePopup.js";
 import EditAvatarPopup from "./EditAvatarPopup.js";
+import AddPlacePopup from "./AddPlacePopup.js";
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
@@ -97,7 +98,7 @@ function App() {
       })
   }
 
-  // 
+  // обновляем информацию о юзере
   function handleUpdateUser(dataUser) {
     api.editProfileInfo(dataUser)
       .then((data) => {
@@ -107,6 +108,30 @@ function App() {
       .catch(err => {
         return Promise.reject(`Ошибка: ${err}`);
       })
+  }
+
+  // обновляем аватар
+  function handleUpdateAvatar(dataUser) {
+    api.changeAvatar(dataUser)
+    .then((data) => {
+      setCurrentUser(data);
+      closeAllPopups();
+    })
+    .catch(err => {
+      return Promise.reject(`Ошибка: ${err}`);
+    })
+  }
+
+  // добавляем место
+  function handleAddPlace(dataPlace) {
+    api.addCard(dataPlace)
+    .then((newCard) => {
+      setCards([newCard, ...cards]); 
+      closeAllPopups();
+    })
+    .catch(err => {
+      return Promise.reject(`Ошибка: ${err}`);
+    })
   }
 
   return (
@@ -131,23 +156,12 @@ function App() {
         <EditAvatarPopup 
           isOpen={isEditAvatarPopupOpen}
           onClose={closeAllPopups}
+          onUpdateAvatar={handleUpdateAvatar}
         />
-        <PopupWithForm
-          name='add'
-          title='Новое место'
-          button='Создать'
+        <AddPlacePopup 
           isOpen={isAddPlacePopupOpen}
           onClose={closeAllPopups}
-          children={
-            <>
-              <input type="text" name="location" className="form__input form__input_type_location" minLength="2" maxLength="30"
-                placeholder="Название" required />
-              <span className="form__error-message location-error"></span>
-              <input name="link" className="form__input form__input_type_link" type="url" placeholder="Ссылка на картинку" 
-                required />
-              <span className="form__error-message link-error"></span>
-            </>
-          }
+          onAddPlace={handleAddPlace}
         />
         <PopupWithForm 
           name='confirm'
