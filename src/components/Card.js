@@ -1,13 +1,23 @@
+import React from "react";
+import CurrentUserContext from "../contexts/CurrentUserContext.js";
+
 function Card(props) {
+  const currentUserInfo = React.useContext(CurrentUserContext);
+  const isOwn = props.card.owner._id === currentUserInfo._id;
+  const isLiked = props.card.likes.some(i => i._id === currentUserInfo._id);
+  const cardLikeButtonClassName = ( 
+    `card__like-button ${isLiked && 'card__like-button_active'}` 
+  );
+
   return (
     <div className="card">
       <img className="card__image" src={props.card.link} alt={props.card.name} 
       onClick={() => props.onCardClick(props.card)}/>
-      <button type="button" className="card__trash-button"></button>
+      {isOwn && <button className="card__trash-button" type="button" onClick={() => {props.onDeleteClick(props.card._id)}} />}
       <div className="card__description">
         <h2 className="card__name">{props.card.name}</h2>
         <div className="card__like-container">
-          <button type="button" className="card__like-button"></button>
+          <button type="button" className={cardLikeButtonClassName} onClick={() => {props.onCardLike(props.card)}}></button>
           <span className="card__like-quantity">{props.card.likes.length}</span>
         </div>
       </div>
