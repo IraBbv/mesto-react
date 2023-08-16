@@ -9,6 +9,7 @@ import CurrentUserContext from "../contexts/CurrentUserContext.js";
 import EditProfilePopup from "./EditProfilePopup.js";
 import EditAvatarPopup from "./EditAvatarPopup.js";
 import AddPlacePopup from "./AddPlacePopup.js";
+import ConfirmDeletePopup from "./ConfirmDeletePopup.js";
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
@@ -52,7 +53,7 @@ function App() {
     setSelectedCard(card);
     setIsImagePopupOpen(true)
   }
-  function closeAllPopups() {
+  function closeAllPopups(evt) {
     setIsAddPlacePopupOpen(false);
     setIsEditProfilePopupOpen(false);
     setIsEditAvatarPopupOpen(false);
@@ -70,7 +71,7 @@ function App() {
           setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
         })
         .catch(err => {
-          return Promise.reject(`Ошибка: ${err}`);
+          return console.error(`Ошибка: ${err}`);
         });
     } else {
       api.likeCard(card._id)
@@ -78,23 +79,22 @@ function App() {
           setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
         })
         .catch(err => {
-          return Promise.reject(`Ошибка: ${err}`);
+          return console.error(`Ошибка: ${err}`);
         });
     }
   }
   
+
+
   // удаление карточки
-  function handleDeleteSubmit(evt) {
-    evt.preventDefault();
+  function handleDeleteSubmit() {
     api.deleteCard(deletedCardId)
       .then(() => {
-        setCards(cards.filter(card => {
-          return card._id !== deletedCardId
-        }))
+        setCards((state) => state.filter((card) => card._id !== deletedCardId));
         closeAllPopups();
       })
       .catch(err => {
-        return Promise.reject(`Ошибка: ${err}`);
+        return console.error(`Ошибка: ${err}`);
       })
   }
 
@@ -106,7 +106,7 @@ function App() {
         closeAllPopups();
       })
       .catch(err => {
-        return Promise.reject(`Ошибка: ${err}`);
+        return console.error(`Ошибка: ${err}`);
       })
   }
 
@@ -118,7 +118,7 @@ function App() {
       closeAllPopups();
     })
     .catch(err => {
-      return Promise.reject(`Ошибка: ${err}`);
+      return console.error(`Ошибка: ${err}`);
     })
   }
 
@@ -130,7 +130,7 @@ function App() {
       closeAllPopups();
     })
     .catch(err => {
-      return Promise.reject(`Ошибка: ${err}`);
+      return console.error(`Ошибка: ${err}`);
     })
   }
 
@@ -163,13 +163,9 @@ function App() {
           onClose={closeAllPopups}
           onAddPlace={handleAddPlace}
         />
-        <PopupWithForm 
-          name='confirm'
-          title='Вы уверены?'
-          button='Да'
+        <ConfirmDeletePopup
           isOpen={isDeletePopupOpen}
           onClose={closeAllPopups}
-          isDeletePopup={true}
           onSubmit={handleDeleteSubmit}
         />
         <ImagePopup 

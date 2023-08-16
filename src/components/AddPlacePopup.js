@@ -15,10 +15,14 @@ function AddPlacePopup(props) {
     evt.preventDefault();
   
     props.onAddPlace({
-      location: location,
-      link: link
+      location, link
     });
   }
+
+  React.useEffect(() => {
+    setLink('');
+    setLocation('');
+  }, [props.onClose]);
   
   return(
     <PopupWithForm
