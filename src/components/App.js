@@ -31,7 +31,7 @@ function App() {
         setCards(cardsData);
       })
       .catch(err => {
-        return Promise.reject(`Ошибка: ${err}`);
+        return console.error(`Ошибка: ${err}`);
       })
   }, []);
   
@@ -53,7 +53,7 @@ function App() {
     setSelectedCard(card);
     setIsImagePopupOpen(true)
   }
-  function closeAllPopups(evt) {
+  function closeAllPopups() {
     setIsAddPlacePopupOpen(false);
     setIsEditProfilePopupOpen(false);
     setIsEditAvatarPopupOpen(false);
